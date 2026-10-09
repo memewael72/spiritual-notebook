@@ -230,8 +230,8 @@
   </div>
 
   <script>
-    // تم تحديث الرابط الجديد الخاص بكِ هنا بنجاح:
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyIw-ibQFVsLzOawa8P3YbdbeqHdSKI1LAmCgfBeeTiqaKSJWEIywaLS2QE51YZPdsI0A/exec';
+    // الرابط الجديد الخاص بكِ مدمج هنا جاهزاً:
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGUe3RBWvSYvygccZuE0D33aSyOA5oe8uSEfzsYdFACM0fbcfhvn81VxKoWypOOXdG0w/exec';
 
     let allData = [];
 
@@ -247,7 +247,7 @@
       script.id = 'jsonp-script';
       script.src = `${SCRIPT_URL}?callback=handleScriptResponse&t=${new Date().getTime()}`;
       script.onerror = function() {
-        tbody.innerHTML = '<tr><td colspan="4" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. تأكدي من إعدادات النشر في Google Script أن الصلاحية مضبوطة على "Anyone".</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. تأكدي من إعدادات النشر في Google Script وأن الصلاحية مضبوطة على "Anyone".</td></tr>';
       };
       document.body.appendChild(script);
     }
