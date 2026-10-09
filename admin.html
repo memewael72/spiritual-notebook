@@ -123,4 +123,127 @@
 <body>
     <div class="dashboard-container">
         <header>
-            <div class="church-logo">
+            <div class="church-logo">⛪</div>
+            <h1>لوحة تحكم إدارة المفكرة الروحية</h1>
+            <p class="subtitle">متابعة نتائج تقارير المفكرة الروحية الأسبوعية</p>
+        </header>
+
+        <div style="text-align: left;">
+            <button class="btn-refresh-db" onclick="loadData()">🔄 تحديث البيانات الآن</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h4>إجمالي المشاركين</h4>
+                <div class="number" id="totalParticipants">0</div>
+            </div>
+            <div class="stat-card">
+                <h4>متوسط نسبة الإنجاز</h4>
+                <div class="number" id="avgProgress">0%</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <input type="text" id="searchInput" placeholder="🔍 بحث باسم الخادم / المخدوم..." onkeyup="filterAndRenderData()">
+            <select id="weekFilter" onchange="filterAndRenderData()">
+                <option value="">جميع الأسابيع</option>
+                <option value="الأسبوع الأول">الأسبوع الأول</option>
+                <option value="الأسبوع الثاني">الأسبوع الثاني</option>
+                <option value="الأسبوع الثالث">الأسبوع الثالث</option>
+                <option value="الأسبوع الرابع">الأسبوع الرابع</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الأسبوع</th>
+                        <th>نسبة الإنجاز</th>
+                        <th>حالة التقييم</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="4" class="no-data">جاري تحميل البيانات... ⏳</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw89vHsfRIX6AUKPBvPym2d9kia33KZPO2rXDgotiVOt4NIBXIEpo2TCD9pwo6ih3-wIQ/exec";
+        let rawData = [];
+
+        function handleResponse(data) {
+            rawData = Array.isArray(data) ? data : [];
+            filterAndRenderData();
+        }
+
+        function loadData() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '<tr><td colspan="4" class="no-data">جاري تحميل البيانات من السحابة... ⏳</td></tr>';
+
+            const oldScript = document.getElementById('jsonpScript');
+            if (oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.id = 'jsonpScript';
+            script.src = `${SCRIPT_URL}?callback=handleResponse`;
+            script.onerror = function() {
+                tableBody.innerHTML = '<tr><td colspan="4" class="no-data">تعذر جلب البيانات. تأكدي من إعدادات Google Script.</td></tr>';
+            };
+            document.body.appendChild(script);
+        }
+
+        function getBadge(percent) {
+            const num = parseFloat(percent) || 0;
+            if (num >= 85) return '<span class="badge badge-high">ممتاز</span>';
+            if (num >= 50) return '<span class="badge badge-medium">جيد جداً</span>';
+            return '<span class="badge badge-low">يحتاج متابعة</span>';
+        }
+
+        function filterAndRenderData() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const weekFilter = document.getElementById('weekFilter').value;
+            const tableBody = document.getElementById('tableBody');
+            
+            tableBody.innerHTML = '';
+            let totalPercent = 0;
+            let count = 0;
+
+            rawData.forEach(rec => {
+                const nameStr = (rec.name || '').toString().toLowerCase();
+                const weekStr = (rec.week || '').toString();
+                const matchesName = nameStr.includes(searchInput);
+                const matchesWeek = weekFilter === "" || weekStr === weekFilter;
+
+                if (matchesName && matchesWeek) {
+                    count++;
+                    const percentVal = parseFloat(rec.percentage) || 0;
+                    totalPercent += percentVal;
+
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td style="font-weight: bold;">${rec.name || '-'}</td>
+                            <td>${rec.week || '-'}</td>
+                            <td style="font-weight: bold; color: var(--church-purple);">${rec.percentage || '0%'}</td>
+                            <td>${getBadge(rec.percentage)}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if (count === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="no-data">لا توجد بيانات مسجلة حتى الآن</td></tr>';
+            }
+
+            document.getElementById('totalParticipants').innerText = count;
+            const avg = count > 0 ? Math.round(totalPercent / count) : 0;
+            document.getElementById('avgProgress').innerText = `${avg}%`;
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
