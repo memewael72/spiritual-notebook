@@ -4,262 +4,223 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة تحكم إدارة المفكرة الروحية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --church-purple: #4a154b;
-      --gold: #d4af37;
-      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --primary: #4a6572;
+      --accent: #00838f;
+      --bg: #f4f7f6;
       --card-bg: #ffffff;
-      --text-main: #2d3748;
-      --success: #2ecc71;
-      --primary-blue: #3498db;
+      --text: #2c3e50;
+      --border: #e0e0e0;
+      --success: #2e7d32;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      margin: 0;
-      padding: 15px;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px;
       direction: rtl;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
-    .header {
+    header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       background: var(--card-bg);
       padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
 
-    .header h1 {
-      color: var(--church-purple);
-      margin: 0 0 8px 0;
-      font-size: 22px;
-    }
-
-    .controls-bar {
-      display: flex;
-      justify-content: flex-end;
+    h1 {
+      color: var(--primary);
+      font-size: 24px;
       margin-bottom: 15px;
     }
 
-    .btn-refresh {
-      background-color: var(--primary-blue);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .stats-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
       gap: 15px;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
-    }
-
-    .stat-card {
       background: var(--card-bg);
       padding: 15px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
     }
 
-    .stat-card h3 {
-      margin: 0;
-      font-size: 13px;
-      color: #718096;
-    }
-
-    .stat-card .value {
-      font-size: 22px;
-      font-weight: bold;
-      color: var(--church-purple);
-      margin-top: 5px;
-    }
-
-    .filters {
+    .search-filter {
       display: flex;
       gap: 10px;
-      margin-bottom: 15px;
+      flex: 1;
+      min-width: 280px;
     }
 
-    .search-input, .select-input {
-      padding: 10px;
-      border: 1px solid #cbd5e0;
-      border-radius: 10px;
-      font-size: 14px;
+    input[type="text"], select {
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       outline: none;
+      font-size: 14px;
+      width: 100%;
     }
 
-    .search-input { flex: 1; }
+    button {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
 
     .table-container {
       background: var(--card-bg);
-      border-radius: 15px;
+      border-radius: 12px;
       overflow-x: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      text-align: center;
+      text-align: right;
     }
 
     th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #edf2f7;
-      font-size: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
     }
 
     th {
-      background-color: var(--church-purple);
+      background-color: var(--primary);
       color: white;
       font-weight: 600;
     }
 
-    .btn-details {
-      background-color: var(--church-purple);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: bold;
+    tr:hover {
+      background-color: #f8fafc;
     }
 
-    /* Modal Styling المطابق لـ index.html */
-    .modal-overlay {
+    .btn-details {
+      background-color: var(--primary);
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    /* Modal Styling */
+    .modal {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 1000;
+      background: rgba(0, 0, 0, 0.5);
       justify-content: center;
       align-items: center;
+      z-index: 1000;
       padding: 15px;
-      box-sizing: border-box;
     }
 
     .modal-content {
       background: white;
+      border-radius: 12px;
       width: 100%;
-      max-width: 650px;
+      max-width: 750px;
       max-height: 90vh;
-      border-radius: 25px;
-      padding: 20px;
       overflow-y: auto;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      padding: 25px;
       position: relative;
     }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #edf2f7;
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      color: var(--church-purple);
-      font-size: 18px;
-    }
-
     .close-btn {
-      background: none;
-      border: none;
-      font-size: 22px;
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      font-size: 24px;
       cursor: pointer;
-      color: #a0aec0;
+      color: #888;
     }
 
-    .progress-section {
-      background: #fffaf0;
-      border: 1px solid #feebc8;
+    .progress-box {
+      background: #eef2f5;
       padding: 15px;
-      border-radius: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
       text-align: center;
-      margin-bottom: 20px;
     }
 
-    .progress-bar-container {
-      background: #edf2f7;
-      border-radius: 10px;
-      height: 14px;
+    .progress-bar-bg {
+      background: #ddd;
+      height: 12px;
+      border-radius: 6px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-top: 8px;
     }
 
-    .progress-bar {
-      background: linear-gradient(90deg, var(--church-purple), var(--success));
-      width: 0%;
+    .progress-bar-fill {
+      background: var(--success);
       height: 100%;
-    }
-
-    .grid-table-container {
-      overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: white;
+      width: 0%;
+      transition: width 0.3s ease;
     }
 
     .grid-table {
       width: 100%;
-      border-collapse: collapse;
-      text-align: center;
+      margin-top: 15px;
+      border: 1px solid var(--border);
     }
 
-    .grid-table th {
-      background: #2d3748;
-      color: white;
-      padding: 10px;
+    .grid-table th, .grid-table td {
+      text-align: center;
+      padding: 8px;
+      border: 1px solid var(--border);
       font-size: 13px;
     }
 
-    .grid-table td {
-      padding: 10px;
-      border-bottom: 1px solid #edf2f7;
-      font-size: 14px;
+    .grid-table th {
+      background-color: #34495e;
     }
 
     .check-box-icon {
+      display: inline-block;
       width: 20px;
       height: 20px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       border-radius: 4px;
-      font-size: 14px;
+      line-height: 20px;
+      font-size: 12px;
       font-weight: bold;
     }
 
     .checked-box {
-      background-color: var(--church-purple);
+      background-color: #8e44ad;
       color: white;
-      border: 2px solid var(--church-purple);
     }
 
     .unchecked-box {
-      border: 2px solid #cbd5e0;
+      border: 1px solid #ccc;
       background-color: #fff;
     }
   </style>
@@ -267,135 +228,128 @@
 <body>
 
   <div class="container">
-    <div class="header">
+    <header>
       <h1>⛪ لوحة تحكم إدارة المفكرة الروحية</h1>
-      <p style="color:#718096; margin:0; font-size:13px;">متابعة نتائج تقارير المفكرة الروحية الأسبوعية</p>
-    </div>
+    </header>
 
-    <div class="controls-bar">
-      <button class="btn-refresh" onclick="fetchData()">🔄 تحديث البيانات الآن</button>
-    </div>
-
-    <div class="stats-cards">
-      <div class="stat-card">
-        <h3>إجمالي المشاركين</h3>
-        <div class="value" id="totalParticipants">0</div>
+    <div class="controls">
+      <div class="search-filter">
+        <input type="text" id="searchInput" placeholder="🔍 بحث باسم الخادم..." oninput="filterData()">
+        <select id="weekFilter" onchange="filterData()">
+          <option value="">جميع الأسابيع</option>
+          <option value="الأسبوع الأول">الأسبوع الأول</option>
+          <option value="الأسبوع الثاني">الأسبوع الثاني</option>
+          <option value="الأسبوع الثالث">الأسبوع الثالث</option>
+          <option value="الأسبوع الرابع">الأسبوع الرابع</option>
+        </select>
       </div>
-      <div class="stat-card">
-        <h3>متوسط نسبة الإنجاز</h3>
-        <div class="value" id="avgPercentage">0%</div>
-      </div>
-    </div>
-
-    <div class="filters">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث باسم الخادم..." oninput="filterData()">
-      <select id="weekFilter" class="select-input" onchange="filterData()">
-        <option value="all">جميع الأسابيع</option>
-        <option value="الأسبوع الأول">الأسبوع الأول</option>
-        <option value="الأسبوع الثاني">الأسبوع الثاني</option>
-        <option value="الأسبوع الثالث">الأسبوع الثالث</option>
-        <option value="الأسبوع الرابع">الأسبوع الرابع</option>
-      </select>
+      <button onclick="fetchData()">🔄 تحديث البيانات الآن</button>
     </div>
 
     <div class="table-container">
       <table>
         <thead>
           <tr>
-            <th>الاسم</th>
+            <th>اسم الخادم</th>
             <th>الأسبوع</th>
-            <th>نسبة الإنجاز</th>
+            <th>نسبة الإنجاز الإجمالية</th>
             <th>التفاصيل</th>
           </tr>
         </thead>
         <tbody id="dataTableBody">
-          <tr>
-            <td colspan="4">جاري تحميل البيانات...</td>
-          </tr>
+          <tr><td colspan="4" style="text-align:center;">جاري تحميل البيانات...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- Modal تفاصيل النوتة الروحية (مطابق للشكل المطلوب) -->
-  <div class="modal-overlay" id="detailsModal">
+  <!-- Modal window for details -->
+  <div class="modal" id="detailsModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modalTitle">📊 جدول المتابعة اليومية</h2>
-        <button class="close-btn" onclick="closeModal()">✖</button>
-      </div>
-
-      <div class="progress-section">
-        <div class="progress-bar-container">
-          <div id="modalProgressBar" class="progress-bar"></div>
-        </div>
-        <p style="margin:0; font-weight:bold; font-size:14px;">
-          نسبة الإنجاز الإجمالية للأسبوع: <span id="modalProgressPercent" style="color:var(--success);">0%</span>
-        </p>
-      </div>
-
-      <div class="weekly-tracker">
-        <h3 style="font-size:15px; color:var(--church-purple); margin-bottom:10px;">📊 جدول المتابعة اليومية</h3>
-        <div class="grid-table-container">
-          <table class="grid-table">
-            <thead>
-              <tr>
-                <th>اليوم</th>
-                <th>باكر</th>
-                <th>النوم</th>
-                <th>كتاب مقدس</th>
-                <th>التناول</th>
-                <th>الاجتماع</th>
-              </tr>
-            </thead>
-            <tbody id="gridTableBody">
-            </tbody>
-          </table>
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle" style="color: var(--primary);">تفاصيل الخادم</h2>
+      
+      <div class="progress-box">
+        <div>نسبة الإنجاز الإجمالية للأسبوع: <strong id="modalProgressPercent" style="color: var(--success);">0%</strong></div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="modalProgressBar"></div>
         </div>
       </div>
+
+      <h3 style="margin-top: 20px; font-size: 16px;">📊 جدول المتابعة اليومية</h3>
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th>اليوم</th>
+            <th>باكر</th>
+            <th>النوم</th>
+            <th>كتاب مقدس</th>
+            <th>التناول</th>
+            <th>الاجتماع</th>
+          </tr>
+        </thead>
+        <tbody id="gridTableBody">
+          <!-- Populated by JavaScript -->
+        </tbody>
+      </table>
     </div>
   </div>
 
   <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPw2qTPfo626O3OFaLffQUW60aSpErVPwWMGsDQ7KzwLhNKn9_XCgzhtMM0A9QogvB9A/exec';
+    // رابط Web App الخاص بـ Apps Script
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPw2qTPfo626O3OFaLffQUW60aSpErVPwWMGsDQ7KzwLhNKn9_XCgzhtMM0A9QogvB9A/exec";
 
+    const days = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
     let allData = [];
-    const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
+    let filteredData = [];
 
-    function fetchData() {
+    async function fetchData() {
       const tbody = document.getElementById('dataTableBody');
-      tbody.innerHTML = '<tr><td colspan="4">⏳ جاري جلب البيانات...</td></tr>';
-
-      const oldScript = document.getElementById('jsonp-script');
-      if (oldScript) oldScript.remove();
-
-      const script = document.createElement('script');
-      script.id = 'jsonp-script';
-      script.src = `${SCRIPT_URL}?callback=handleScriptResponse&t=${new Date().getTime()}`;
-      document.body.appendChild(script);
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">جاري جلب البيانات من Google Sheets...</td></tr>';
+      
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+        
+        allData = data;
+        filterData();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">حدث خطأ أثناء جلب البيانات. تأكد من رابط Google Script.</td></tr>';
+      }
     }
 
-    function handleScriptResponse(res) {
-      allData = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
-      renderData(allData);
-      updateStats(allData);
+    function filterData() {
+      const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+      const selectedWeek = document.getElementById('weekFilter').value;
+
+      filteredData = allData.filter(item => {
+        const matchesName = !searchTerm || (item.name && item.name.toLowerCase().includes(searchTerm));
+        const matchesWeek = !selectedWeek || item.week === selectedWeek;
+        return matchesName && matchesWeek;
+      });
+
+      renderData(filteredData);
     }
 
     function renderData(data) {
       const tbody = document.getElementById('dataTableBody');
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4">لا توجد بيانات متاحة.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد بيانات متاحة.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = data.map((item, index) => `
-        <tr>
-          <td>${item.name || '-'}</td>
-          <td>${item.week || '-'}</td>
-          <td><strong>${item.percentage || '0%'}</strong></td>
-          <td><button class="btn-details" onclick="showDetails(${index})">👁️ عرض التفاصيل</button></td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = data.map((item) => {
+        const originalIndex = allData.indexOf(item);
+        return `
+          <tr>
+            <td>${item.name || '-'}</td>
+            <td>${item.week || '-'}</td>
+            <td><strong>${item.percentage || '0%'}</strong></td>
+            <td><button class="btn-details" onclick="showDetails(${originalIndex})">👁️ عرض التفاصيل</button></td>
+          </tr>
+        `;
+      }).join('');
     }
 
     function showDetails(index) {
@@ -409,7 +363,6 @@
       document.getElementById('modalProgressBar').style.width = percStr;
 
       const rowValues = item.fullRow || [];
-      // الخانات التفصيلية تبدأ بعد (الاسم، الأسبوع، النسبة، التاريخ)
       const responses = rowValues.slice(4);
 
       let gridHtml = '';
@@ -441,34 +394,15 @@
       document.getElementById('detailsModal').style.display = 'none';
     }
 
-    function updateStats(data) {
-      document.getElementById('totalParticipants').innerText = data.length;
-      if (data.length === 0) {
-        document.getElementById('avgPercentage').innerText = '0%';
-        return;
-      }
-      const sum = data.reduce((acc, curr) => acc + (parseFloat(curr.percentage) || 0), 0);
-      document.getElementById('avgPercentage').innerText = `${Math.round(sum / data.length)}%`;
-    }
-
-    function filterData() {
-      const search = document.getElementById('searchInput').value.trim().toLowerCase();
-      const week = document.getElementById('weekFilter').value;
-
-      const filtered = allData.filter(item => {
-        const matchName = !search || (item.name && item.name.toLowerCase().includes(search));
-        const matchWeek = week === 'all' || item.week === week;
-        return matchName && matchWeek;
-      });
-
-      renderData(filtered);
-    }
-
     window.onclick = function(event) {
-      if (event.target === document.getElementById('detailsModal')) closeModal();
+      const modal = document.getElementById('detailsModal');
+      if (event.target === modal) {
+        closeModal();
+      }
     };
 
-    window.onload = fetchData;
+    // جلب البيانات تلقائياً
+    fetchData();
   </script>
 </body>
 </html>
