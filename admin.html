@@ -169,10 +169,90 @@
       color: var(--warning);
     }
 
+    .btn-details {
+      background-color: #4a154b;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+
+    .btn-details:hover {
+      background-color: #611f69;
+    }
+
     .status-msg {
       text-align: center;
       padding: 20px;
       color: #666;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      border-radius: 12px;
+      padding: 20px;
+      overflow-y: auto;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px #eee dashed;
+    }
+
+    .detail-item .label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .detail-item .val {
+      color: #333;
     }
   </style>
 </head>
@@ -218,27 +298,41 @@
             <th>الأسبوع</th>
             <th>نسبة الإنجاز</th>
             <th>حالة التقييم</th>
+            <th>التفاصيل</th>
           </tr>
         </thead>
         <tbody id="dataTableBody">
           <tr>
-            <td colspan="4" class="status-msg">جاري تحميل البيانات...</td>
+            <td colspan="5" class="status-msg">جاري تحميل البيانات...</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
+  <!-- Modal التفاصيل -->
+  <div class="modal-overlay" id="detailsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">📖 تفاصيل النوتة الروحية</h2>
+        <button class="close-btn" onclick="closeModal()">✖</button>
+      </div>
+      <div id="modalBody">
+        <!-- الإجابات ستظهر هنا -->
+      </div>
+    </div>
+  </div>
+
   <script>
-    // الرابط الجديد الخاص بكِ مدمج هنا جاهزاً:
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGUe3RBWvSYvygccZuE0D33aSyOA5oe8uSEfzsYdFACM0fbcfhvn81VxKoWypOOXdG0w/exec';
+    // تم دمج الرابط الجديد الخاص بكِ بنجاح:
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCGXTkkWfpe8UJ5oiVk5rrKhTTA4qqx_D5S4yndolY7h4JLx6QkPmoO8vqinEo9bbQIw/exec';
 
     let allData = [];
+    let headers = [];
 
-    // جلب البيانات عبر JSONP
     function fetchData() {
       const tbody = document.getElementById('dataTableBody');
-      tbody.innerHTML = '<tr><td colspan="4" class="status-msg">⏳ جاري جلب البيانات من السيرفر...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="status-msg">⏳ جاري جلب البيانات من السيرفر...</td></tr>';
 
       const oldScript = document.getElementById('jsonp-script');
       if (oldScript) oldScript.remove();
@@ -247,29 +341,34 @@
       script.id = 'jsonp-script';
       script.src = `${SCRIPT_URL}?callback=handleScriptResponse&t=${new Date().getTime()}`;
       script.onerror = function() {
-        tbody.innerHTML = '<tr><td colspan="4" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. تأكدي من إعدادات النشر في Google Script وأن الصلاحية مضبوطة على "Anyone".</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. تأكدي من إعدادات النشر في Google Script.</td></tr>';
       };
       document.body.appendChild(script);
     }
 
-    function handleScriptResponse(data) {
-      if (Array.isArray(data)) {
-        allData = data;
+    function handleScriptResponse(res) {
+      if (res && res.data) {
+        allData = res.data;
+        headers = res.headers || [];
+        renderData(allData);
+        updateStats(allData);
+      } else if (Array.isArray(res)) {
+        allData = res;
         renderData(allData);
         updateStats(allData);
       } else {
-        document.getElementById('dataTableBody').innerHTML = '<tr><td colspan="4" class="status-msg">لا توجد بيانات متاحة حالياً.</td></tr>';
+        document.getElementById('dataTableBody').innerHTML = '<tr><td colspan="5" class="status-msg">لا توجد بيانات متاحة حالياً.</td></tr>';
       }
     }
 
     function renderData(data) {
       const tbody = document.getElementById('dataTableBody');
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="status-msg">لا توجد سجلات مطابقة.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="status-msg">لا توجد سجلات مطابقة.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = data.map(item => {
+      tbody.innerHTML = data.map((item, index) => {
         const perc = parseFloat(item.percentage) || 0;
         const badgeClass = perc >= 70 ? 'badge-high' : 'badge-medium';
         const badgeText = perc >= 70 ? 'ممتاز' : 'مقبول';
@@ -280,9 +379,37 @@
             <td>${item.week || '-'}</td>
             <td><strong>${perc}%</strong></td>
             <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+            <td><button class="btn-details" onclick="showDetails(${index})">👁️ عرض الإجابات</button></td>
           </tr>
         `;
       }).join('');
+    }
+
+    function showDetails(index) {
+      const item = allData[index];
+      if (!item) return;
+
+      document.getElementById('modalTitle').innerText = `📖 تقرير الخادم: ${item.name} (${item.week})`;
+      const modalBody = document.getElementById('modalBody');
+
+      if (item.fullRow && item.fullRow.length > 0) {
+        modalBody.innerHTML = item.fullRow.map((val, idx) => {
+          return `
+            <div class="detail-item">
+              <span class="label">${headers[idx] || `العمود ${idx + 1}`}:</span>
+              <span class="val">${val !== "" ? val : '-'}</span>
+            </div>
+          `;
+        }).join('');
+      } else {
+        modalBody.innerHTML = '<p class="status-msg">لا تتوفر تفاصيل إضافية لهذه الاستمارة.</p>';
+      }
+
+      document.getElementById('detailsModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('detailsModal').style.display = 'none';
     }
 
     function updateStats(data) {
