@@ -194,7 +194,7 @@
 
         <div class="actions-section">
             <button class="btn-submit" id="submitBtn">حفظ وإرسال البيانات</button>
-            <button class="btn-reset" id="resetBtn">إعادة ضبط</button>
+            <button class="btn-reset" id="resetBtn">🔄 إعادة ضبط (تصفير الخانات)</button>
         </div>
     </div>
 
@@ -214,6 +214,7 @@
         const progressPercent = document.getElementById('progressPercent');
         const submitBtn = document.getElementById('submitBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const weekSelect = document.getElementById('weekSelect');
 
         function updateProgress() {
             let totalProgress = 0;
@@ -230,13 +231,26 @@
             progressPercent.innerText = `${finalPercent}%`;
         }
 
+        function resetFormInputs(clearName = false) {
+            checkboxes.forEach(cb => cb.checked = false);
+            if (clearName) {
+                document.getElementById('userName').value = '';
+            }
+            updateProgress();
+        }
+
         checkboxes.forEach(cb => {
             cb.addEventListener('change', updateProgress);
         });
 
+        // تصفير الخانات تلقائياً عند تغيير الأسبوع لتسهيل الإدخال للأسبوع الجديد
+        weekSelect.addEventListener('change', () => {
+            resetFormInputs(false);
+        });
+
         submitBtn.addEventListener('click', () => {
             const userName = document.getElementById('userName').value.trim();
-            const week = document.getElementById('weekSelect').value;
+            const week = weekSelect.value;
             const percent = progressPercent.innerText;
 
             if (!userName) {
@@ -279,10 +293,8 @@
         });
 
         resetBtn.addEventListener('click', () => {
-            if (confirm('هل أنت تأكد من إعادة ضبط جميع الإدخالات؟')) {
-                checkboxes.forEach(cb => cb.checked = false);
-                document.getElementById('userName').value = '';
-                updateProgress();
+            if (confirm('هل أنت متأكد من إعادة ضبط وتصفير جميع الخانات؟')) {
+                resetFormInputs(true);
             }
         });
     </script>
