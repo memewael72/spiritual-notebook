@@ -199,7 +199,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw89vHsfRIX6AUKPBvPym2d9kia33KZPO2rXDgotiVOt4NIBXIEpo2TCD9pwo6ih3-wIQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPw2qTPfo626O3OFaLffQUW60aSpErVPwWMGsDQ7KzwLhNKn9_XCgzhtMM0A9QogvB9A/exec";
 
         const WEIGHTS = {
             matins: 30.5 / 7,
@@ -217,7 +217,6 @@
 
         function updateProgress() {
             let totalProgress = 0;
-
             checkboxes.forEach(cb => {
                 if (cb.checked) {
                     const activity = cb.getAttribute('data-activity');
@@ -226,9 +225,7 @@
                     }
                 }
             });
-
             const finalPercent = Math.min(Math.round(totalProgress * 100) / 100, 100);
-            
             progressBar.style.width = `${finalPercent}%`;
             progressPercent.innerText = `${finalPercent}%`;
         }
@@ -247,6 +244,11 @@
                 return;
             }
 
+            const responses = [];
+            checkboxes.forEach(cb => {
+                responses.push(cb.checked ? "TRUE" : "FALSE");
+            });
+
             submitBtn.disabled = true;
             submitBtn.innerText = "جاري الإرسال...";
 
@@ -259,11 +261,12 @@
                 body: JSON.stringify({
                     name: userName,
                     week: week,
-                    percentage: percent
+                    percentage: percent,
+                    responses: responses
                 })
             })
             .then(() => {
-                alert(`تم إرسال وحفظ البيانات بنجاح في السحابة!\nالاسم: ${userName}\nالفترة: ${week}\nنسبة الإنجاز: ${percent}`);
+                alert(`تم إرسال وحفظ البيانات بنجاح!\nالاسم: ${userName}\nالفترة: ${week}\nنسبة الإنجاز: ${percent}`);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "حفظ وإرسال البيانات";
             })

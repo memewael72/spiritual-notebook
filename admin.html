@@ -6,81 +6,64 @@
   <title>لوحة تحكم إدارة المفكرة الروحية</title>
   <style>
     :root {
-      --primary: #4a154b;
-      --primary-light: #611f69;
-      --bg-color: #f4f4f9;
+      --church-purple: #4a154b;
+      --gold: #d4af37;
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       --card-bg: #ffffff;
-      --text-color: #333333;
-      --border-color: #e0e0e0;
-      --success: #2e7d32;
-      --warning: #ed6c02;
+      --text-main: #2d3748;
+      --success: #2ecc71;
+      --primary-blue: #3498db;
     }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background: var(--bg-gradient);
+      color: var(--text-main);
       margin: 0;
-      padding: 20px;
+      padding: 15px;
       direction: rtl;
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       background: var(--card-bg);
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
     }
 
     .header h1 {
-      color: var(--primary);
-      margin: 0 0 10px 0;
-      font-size: 24px;
-    }
-
-    .header p {
-      color: #666;
-      margin: 0;
+      color: var(--church-purple);
+      margin: 0 0 8px 0;
+      font-size: 22px;
     }
 
     .controls-bar {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 15px;
-      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-bottom: 15px;
     }
 
     .btn-refresh {
-      background-color: #1976d2;
+      background-color: var(--primary-blue);
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
+      padding: 10px 18px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
       font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.2s;
-    }
-
-    .btn-refresh:hover {
-      background-color: #1565c0;
     }
 
     .stats-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 15px;
       margin-bottom: 20px;
     }
@@ -88,110 +71,77 @@
     .stat-card {
       background: var(--card-bg);
       padding: 15px;
-      border-radius: 10px;
+      border-radius: 15px;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .stat-card h3 {
       margin: 0;
-      font-size: 14px;
-      color: #666;
+      font-size: 13px;
+      color: #718096;
     }
 
     .stat-card .value {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
-      color: var(--primary);
+      color: var(--church-purple);
       margin-top: 5px;
     }
 
     .filters {
       display: flex;
-      gap: 15px;
+      gap: 10px;
       margin-bottom: 15px;
     }
 
     .search-input, .select-input {
       padding: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border: 1px solid #cbd5e0;
+      border-radius: 10px;
       font-size: 14px;
+      outline: none;
     }
 
-    .search-input {
-      flex: 1;
-    }
+    .search-input { flex: 1; }
 
     .table-container {
       background: var(--card-bg);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 15px;
+      overflow-x: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      text-align: right;
+      text-align: center;
     }
 
     th, td {
-      padding: 12px 15px;
-      border-bottom: 1px solid var(--border-color);
+      padding: 12px 10px;
+      border-bottom: 1px solid #edf2f7;
+      font-size: 14px;
     }
 
     th {
-      background-color: var(--primary);
+      background-color: var(--church-purple);
       color: white;
       font-weight: 600;
     }
 
-    tr:hover {
-      background-color: #f8f9fa;
-    }
-
-    .badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
-      display: inline-block;
-    }
-
-    .badge-high {
-      background-color: #e8f5e9;
-      color: var(--success);
-    }
-
-    .badge-medium {
-      background-color: #fff3e0;
-      color: var(--warning);
-    }
-
     .btn-details {
-      background-color: #4a154b;
+      background-color: var(--church-purple);
       color: white;
       border: none;
       padding: 6px 12px;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 12px;
       font-weight: bold;
-      transition: background 0.2s;
     }
 
-    .btn-details:hover {
-      background-color: #611f69;
-    }
-
-    .status-msg {
-      text-align: center;
-      padding: 20px;
-      color: #666;
-    }
-
-    /* Modal / النافذة المنبثقة */
+    /* Modal Styling المطابق لـ index.html */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -199,21 +149,23 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       z-index: 1000;
       justify-content: center;
       align-items: center;
+      padding: 15px;
+      box-sizing: border-box;
     }
 
     .modal-content {
       background: white;
-      width: 90%;
+      width: 100%;
       max-width: 650px;
-      max-height: 85vh;
-      border-radius: 12px;
+      max-height: 90vh;
+      border-radius: 25px;
       padding: 20px;
       overflow-y: auto;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       position: relative;
     }
 
@@ -221,14 +173,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 2px solid #edf2f7;
       padding-bottom: 10px;
       margin-bottom: 15px;
     }
 
     .modal-header h2 {
       margin: 0;
-      color: var(--primary);
+      color: var(--church-purple);
       font-size: 18px;
     }
 
@@ -237,29 +189,78 @@
       border: none;
       font-size: 22px;
       cursor: pointer;
-      color: #888;
+      color: #a0aec0;
+    }
+
+    .progress-section {
+      background: #fffaf0;
+      border: 1px solid #feebc8;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar-container {
+      background: #edf2f7;
+      border-radius: 10px;
+      height: 14px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, var(--church-purple), var(--success));
+      width: 0%;
+      height: 100%;
+    }
+
+    .grid-table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: white;
+    }
+
+    .grid-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    .grid-table th {
+      background: #2d3748;
+      color: white;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .grid-table td {
+      padding: 10px;
+      border-bottom: 1px solid #edf2f7;
+      font-size: 14px;
+    }
+
+    .check-box-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 14px;
       font-weight: bold;
     }
 
-    .detail-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px #eee dashed;
-      gap: 10px;
+    .checked-box {
+      background-color: var(--church-purple);
+      color: white;
+      border: 2px solid var(--church-purple);
     }
 
-    .detail-item .label {
-      font-weight: bold;
-      color: #444;
-      flex: 1;
-    }
-
-    .detail-item .val {
-      color: #000;
-      font-weight: 600;
-      text-align: left;
-      flex: 1;
+    .unchecked-box {
+      border: 2px solid #cbd5e0;
+      background-color: #fff;
     }
   </style>
 </head>
@@ -268,7 +269,7 @@
   <div class="container">
     <div class="header">
       <h1>⛪ لوحة تحكم إدارة المفكرة الروحية</h1>
-      <p>متابعة نتائج تقارير المفكرة الروحية الأسبوعية</p>
+      <p style="color:#718096; margin:0; font-size:13px;">متابعة نتائج تقارير المفكرة الروحية الأسبوعية</p>
     </div>
 
     <div class="controls-bar">
@@ -287,7 +288,7 @@
     </div>
 
     <div class="filters">
-      <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث باسم الخادم / المخدوم..." oninput="filterData()">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث باسم الخادم..." oninput="filterData()">
       <select id="weekFilter" class="select-input" onchange="filterData()">
         <option value="all">جميع الأسابيع</option>
         <option value="الأسبوع الأول">الأسبوع الأول</option>
@@ -304,42 +305,66 @@
             <th>الاسم</th>
             <th>الأسبوع</th>
             <th>نسبة الإنجاز</th>
-            <th>حالة التقييم</th>
             <th>التفاصيل</th>
           </tr>
         </thead>
         <tbody id="dataTableBody">
           <tr>
-            <td colspan="5" class="status-msg">جاري تحميل البيانات...</td>
+            <td colspan="4">جاري تحميل البيانات...</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- النافذة المنبثقة لرؤية الإجابات -->
+  <!-- Modal تفاصيل النوتة الروحية (مطابق للشكل المطلوب) -->
   <div class="modal-overlay" id="detailsModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="modalTitle">📖 تفاصيل النوتة الروحية</h2>
+        <h2 id="modalTitle">📊 جدول المتابعة اليومية</h2>
         <button class="close-btn" onclick="closeModal()">✖</button>
       </div>
-      <div id="modalBody">
-        <!-- ستظهر الإجابات والأسئلة هنا -->
+
+      <div class="progress-section">
+        <div class="progress-bar-container">
+          <div id="modalProgressBar" class="progress-bar"></div>
+        </div>
+        <p style="margin:0; font-weight:bold; font-size:14px;">
+          نسبة الإنجاز الإجمالية للأسبوع: <span id="modalProgressPercent" style="color:var(--success);">0%</span>
+        </p>
+      </div>
+
+      <div class="weekly-tracker">
+        <h3 style="font-size:15px; color:var(--church-purple); margin-bottom:10px;">📊 جدول المتابعة اليومية</h3>
+        <div class="grid-table-container">
+          <table class="grid-table">
+            <thead>
+              <tr>
+                <th>اليوم</th>
+                <th>باكر</th>
+                <th>النوم</th>
+                <th>كتاب مقدس</th>
+                <th>التناول</th>
+                <th>الاجتماع</th>
+              </tr>
+            </thead>
+            <tbody id="gridTableBody">
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // الرابط الجديد المحدث بالكامل:
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-JN510tDUSVS2By41FclGD0hNGEBFegrPrlLfyuFk2YX_wnEwtNSgd6KTCFG5y_75xw/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPw2qTPfo626O3OFaLffQUW60aSpErVPwWMGsDQ7KzwLhNKn9_XCgzhtMM0A9QogvB9A/exec';
 
     let allData = [];
-    let headers = [];
+    const days = ["السبت", "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"];
 
     function fetchData() {
       const tbody = document.getElementById('dataTableBody');
-      tbody.innerHTML = '<tr><td colspan="5" class="status-msg">⏳ جاري جلب البيانات من السيرفر...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4">⏳ جاري جلب البيانات...</td></tr>';
 
       const oldScript = document.getElementById('jsonp-script');
       if (oldScript) oldScript.remove();
@@ -347,79 +372,68 @@
       const script = document.createElement('script');
       script.id = 'jsonp-script';
       script.src = `${SCRIPT_URL}?callback=handleScriptResponse&t=${new Date().getTime()}`;
-      script.onerror = function() {
-        tbody.innerHTML = '<tr><td colspan="5" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. التأكد من نشر Google Script بحساب Anyone.</td></tr>';
-      };
       document.body.appendChild(script);
     }
 
     function handleScriptResponse(res) {
-      if (res && res.data) {
-        allData = res.data;
-        headers = res.headers || ["الاسم", "الأسبوع", "النسبة", "التاريخ"];
-      } else if (Array.isArray(res)) {
-        allData = res;
-        headers = ["الاسم", "الأسبوع", "النسبة", "التاريخ"];
-      } else {
-        allData = [];
-      }
-
-      if (allData.length > 0) {
-        renderData(allData);
-        updateStats(allData);
-      } else {
-        document.getElementById('dataTableBody').innerHTML = '<tr><td colspan="5" class="status-msg">لا توجد بيانات متاحة حالياً.</td></tr>';
-      }
+      allData = (res && res.data) ? res.data : (Array.isArray(res) ? res : []);
+      renderData(allData);
+      updateStats(allData);
     }
 
     function renderData(data) {
       const tbody = document.getElementById('dataTableBody');
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="status-msg">لا توجد سجلات مطابقة.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4">لا توجد بيانات متاحة.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = data.map((item, index) => {
-        const perc = parseFloat(item.percentage) || 0;
-        const badgeClass = perc >= 70 ? 'badge-high' : 'badge-medium';
-        const badgeText = perc >= 70 ? 'ممتاز' : 'مقبول';
-
-        return `
-          <tr>
-            <td>${item.name || '-'}</td>
-            <td>${item.week || '-'}</td>
-            <td><strong>${perc}%</strong></td>
-            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-            <td><button class="btn-details" onclick="showDetails(${index})">👁️ عرض الإجابات</button></td>
-          </tr>
-        `;
-      }).join('');
+      tbody.innerHTML = data.map((item, index) => `
+        <tr>
+          <td>${item.name || '-'}</td>
+          <td>${item.week || '-'}</td>
+          <td><strong>${item.percentage || '0%'}</strong></td>
+          <td><button class="btn-details" onclick="showDetails(${index})">👁️ عرض التفاصيل</button></td>
+        </tr>
+      `).join('');
     }
 
     function showDetails(index) {
       const item = allData[index];
       if (!item) return;
 
-      document.getElementById('modalTitle').innerText = `📖 تقرير: ${item.name || 'بدون اسم'} (${item.week || ''})`;
-      const modalBody = document.getElementById('modalBody');
+      document.getElementById('modalTitle').innerText = `${item.name || ''} (${item.week || ''})`;
+      
+      const percStr = item.percentage || '0%';
+      document.getElementById('modalProgressPercent').innerText = percStr;
+      document.getElementById('modalProgressBar').style.width = percStr;
 
-      // تفقد الإجابات التفصيلية
-      const rowValues = item.fullRow || [item.name, item.week, item.percentage + '%', item.date];
+      const rowValues = item.fullRow || [];
+      // الخانات التفصيلية تبدأ بعد (الاسم، الأسبوع، النسبة، التاريخ)
+      const responses = rowValues.slice(4);
 
-      let htmlContent = '';
-      for (let i = 0; i < rowValues.length; i++) {
-        const questionLabel = headers[i] || `السؤال ${i + 1}`;
-        const answerValue = rowValues[i] !== undefined && rowValues[i] !== "" ? rowValues[i] : '-';
+      let gridHtml = '';
+      let respIndex = 0;
 
-        htmlContent += `
-          <div class="detail-item">
-            <span class="label">${questionLabel}:</span>
-            <span class="val">${answerValue}</span>
-          </div>
-        `;
-      }
+      days.forEach(day => {
+        gridHtml += `<tr><td style="font-weight:bold; background:#f7fafc;">${day}</td>`;
+        for (let a = 0; a < 5; a++) {
+          const val = responses[respIndex];
+          const isChecked = val === true || val === "TRUE" || val === "true";
+          
+          gridHtml += `
+            <td>
+              <span class="check-box-icon ${isChecked ? 'checked-box' : 'unchecked-box'}">
+                ${isChecked ? '✓' : ''}
+              </span>
+            </td>
+          `;
+          respIndex++;
+        }
+        gridHtml += `</tr>`;
+      });
 
-      modalBody.innerHTML = htmlContent;
+      document.getElementById('gridTableBody').innerHTML = gridHtml;
       document.getElementById('detailsModal').style.display = 'flex';
     }
 
@@ -434,8 +448,7 @@
         return;
       }
       const sum = data.reduce((acc, curr) => acc + (parseFloat(curr.percentage) || 0), 0);
-      const avg = Math.round(sum / data.length);
-      document.getElementById('avgPercentage').innerText = `${avg}%`;
+      document.getElementById('avgPercentage').innerText = `${Math.round(sum / data.length)}%`;
     }
 
     function filterData() {
@@ -451,12 +464,8 @@
       renderData(filtered);
     }
 
-    // إغلاق النافذة عند الضغط خارج المودال
     window.onclick = function(event) {
-      const modal = document.getElementById('detailsModal');
-      if (event.target === modal) {
-        closeModal();
-      }
+      if (event.target === document.getElementById('detailsModal')) closeModal();
     };
 
     window.onload = fetchData;
