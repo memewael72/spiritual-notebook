@@ -177,6 +177,7 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 12px;
+      font-weight: bold;
       transition: background 0.2s;
     }
 
@@ -190,7 +191,7 @@
       color: #666;
     }
 
-    /* Modal Styles */
+    /* Modal / النافذة المنبثقة */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -207,8 +208,8 @@
     .modal-content {
       background: white;
       width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
+      max-width: 650px;
+      max-height: 85vh;
       border-radius: 12px;
       padding: 20px;
       overflow-y: auto;
@@ -234,25 +235,31 @@
     .close-btn {
       background: none;
       border: none;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
       color: #888;
+      font-weight: bold;
     }
 
     .detail-item {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
+      padding: 10px 0;
       border-bottom: 1px #eee dashed;
+      gap: 10px;
     }
 
     .detail-item .label {
       font-weight: bold;
-      color: #555;
+      color: #444;
+      flex: 1;
     }
 
     .detail-item .val {
-      color: #333;
+      color: #000;
+      font-weight: 600;
+      text-align: left;
+      flex: 1;
     }
   </style>
 </head>
@@ -310,7 +317,7 @@
     </div>
   </div>
 
-  <!-- Modal التفاصيل -->
+  <!-- النافذة المنبثقة لرؤية الإجابات -->
   <div class="modal-overlay" id="detailsModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -318,14 +325,14 @@
         <button class="close-btn" onclick="closeModal()">✖</button>
       </div>
       <div id="modalBody">
-        <!-- الإجابات ستظهر هنا -->
+        <!-- ستظهر الإجابات والأسئلة هنا -->
       </div>
     </div>
   </div>
 
   <script>
-    // تم دمج الرابط الجديد الخاص بكِ بنجاح:
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCGXTkkWfpe8UJ5oiVk5rrKhTTA4qqx_D5S4yndolY7h4JLx6QkPmoO8vqinEo9bbQIw/exec';
+    // الرابط الجديد المحدث بالكامل:
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-JN510tDUSVS2By41FclGD0hNGEBFegrPrlLfyuFk2YX_wnEwtNSgd6KTCFG5y_75xw/exec';
 
     let allData = [];
     let headers = [];
@@ -341,7 +348,7 @@
       script.id = 'jsonp-script';
       script.src = `${SCRIPT_URL}?callback=handleScriptResponse&t=${new Date().getTime()}`;
       script.onerror = function() {
-        tbody.innerHTML = '<tr><td colspan="5" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. تأكدي من إعدادات النشر في Google Script.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="status-msg" style="color:red;">❌ تعذر جلب البيانات. التأكد من نشر Google Script بحساب Anyone.</td></tr>';
       };
       document.body.appendChild(script);
     }
@@ -349,11 +356,15 @@
     function handleScriptResponse(res) {
       if (res && res.data) {
         allData = res.data;
-        headers = res.headers || [];
-        renderData(allData);
-        updateStats(allData);
+        headers = res.headers || ["الاسم", "الأسبوع", "النسبة", "التاريخ"];
       } else if (Array.isArray(res)) {
         allData = res;
+        headers = ["الاسم", "الأسبوع", "النسبة", "التاريخ"];
+      } else {
+        allData = [];
+      }
+
+      if (allData.length > 0) {
         renderData(allData);
         updateStats(allData);
       } else {
@@ -389,22 +400,26 @@
       const item = allData[index];
       if (!item) return;
 
-      document.getElementById('modalTitle').innerText = `📖 تقرير الخادم: ${item.name} (${item.week})`;
+      document.getElementById('modalTitle').innerText = `📖 تقرير: ${item.name || 'بدون اسم'} (${item.week || ''})`;
       const modalBody = document.getElementById('modalBody');
 
-      if (item.fullRow && item.fullRow.length > 0) {
-        modalBody.innerHTML = item.fullRow.map((val, idx) => {
-          return `
-            <div class="detail-item">
-              <span class="label">${headers[idx] || `العمود ${idx + 1}`}:</span>
-              <span class="val">${val !== "" ? val : '-'}</span>
-            </div>
-          `;
-        }).join('');
-      } else {
-        modalBody.innerHTML = '<p class="status-msg">لا تتوفر تفاصيل إضافية لهذه الاستمارة.</p>';
+      // تفقد الإجابات التفصيلية
+      const rowValues = item.fullRow || [item.name, item.week, item.percentage + '%', item.date];
+
+      let htmlContent = '';
+      for (let i = 0; i < rowValues.length; i++) {
+        const questionLabel = headers[i] || `السؤال ${i + 1}`;
+        const answerValue = rowValues[i] !== undefined && rowValues[i] !== "" ? rowValues[i] : '-';
+
+        htmlContent += `
+          <div class="detail-item">
+            <span class="label">${questionLabel}:</span>
+            <span class="val">${answerValue}</span>
+          </div>
+        `;
       }
 
+      modalBody.innerHTML = htmlContent;
       document.getElementById('detailsModal').style.display = 'flex';
     }
 
@@ -435,6 +450,14 @@
 
       renderData(filtered);
     }
+
+    // إغلاق النافذة عند الضغط خارج المودال
+    window.onclick = function(event) {
+      const modal = document.getElementById('detailsModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
 
     window.onload = fetchData;
   </script>
