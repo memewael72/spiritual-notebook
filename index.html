@@ -82,7 +82,6 @@
         button:hover { opacity: 0.9; }
 
         .btn-submit { background: var(--primary-blue); color: white; }
-        .btn-share { background: var(--success); color: white; }
         .btn-reset { background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; padding: 10px; font-size: 13px; }
     </style>
 </head>
@@ -200,12 +199,7 @@
     </div>
 
     <script>
-        // توزيع النسبة المئوية على الأنشطة (إجمالي الإنجاز = 100%):
-        // باكر (إجمالي 30.5%) -> 30.5 / 7 أيام ≈ 4.357% لكل يوم
-        // النوم (إجمالي 30.5%) -> 30.5 / 7 أيام ≈ 4.357% لكل يوم
-        // كتاب مقدس (إجمالي 30.5%) -> 30.5 / 7 أيام ≈ 4.357% لكل يوم
-        // التناول (إجمالي 4.35%) -> 4.35 / 7 أيام ≈ 0.621% لكل يوم
-        // الاجتماع (إجمالي 4.35%) -> 4.35 / 7 أيام ≈ 0.621% لكل يوم
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw89vHsfRIX6AUKPBvPym2d9kia33KZPO2rXDgotiVOt4NIBXIEpo2TCD9pwo6ih3-wIQ/exec";
 
         const WEIGHTS = {
             matins: 30.5 / 7,
@@ -233,7 +227,6 @@
                 }
             });
 
-            // تقريب النسبة لأقرب رقمين عشريين
             const finalPercent = Math.min(Math.round(totalProgress * 100) / 100, 100);
             
             progressBar.style.width = `${finalPercent}%`;
@@ -254,7 +247,32 @@
                 return;
             }
 
-            alert(`تم حفظ البيانات بنجاح!\nالاسم: ${userName}\nالفترة: ${week}\nنسبة الإنجاز: ${percent}`);
+            submitBtn.disabled = true;
+            submitBtn.innerText = "جاري الإرسال...";
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: userName,
+                    week: week,
+                    percentage: percent
+                })
+            })
+            .then(() => {
+                alert(`تم إرسال وحفظ البيانات بنجاح في السحابة!\nالاسم: ${userName}\nالفترة: ${week}\nنسبة الإنجاز: ${percent}`);
+                submitBtn.disabled = false;
+                submitBtn.innerText = "حفظ وإرسال البيانات";
+            })
+            .catch(error => {
+                console.error("Error!", error.message);
+                alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "حفظ وإرسال البيانات";
+            });
         });
 
         resetBtn.addEventListener('click', () => {
